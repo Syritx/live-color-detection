@@ -27,7 +27,7 @@ public class ScreenCapture {
         Rectangle imageSize = new Rectangle(0,0,(int)sd.getWidth(),(int)sd.getHeight());
 
         BufferedImage image = robot.createScreenCapture(imageSize);
-        image = PixelColor.getPixelColor(image);
+        image = PixelColor.getPixelColor(image,false);
 
         overwriteFile(image);
     }
