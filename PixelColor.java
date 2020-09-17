@@ -18,8 +18,10 @@ public class PixelColor {
         highlightColor = rgb;
     }
 
-    public static BufferedImage getPixelColor(BufferedImage image) {
+    public static BufferedImage getPixelColor(BufferedImage image, boolean canDesaturate) {
+
         int width = image.getWidth(), height = image.getHeight();
+        isSelected = new ArrayList<Boolean>();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -34,11 +36,30 @@ public class PixelColor {
                 if (checkColor(red,0) && checkColor(green,1) && checkColor(blue,2)) {
 
                     selectedRGB = (255<<24) | (highlightColor[0]<<16) | (highlightColor[1]<<8) | highlightColor[2];
+                    isSelected.add(true);
                     image.setRGB(x, y, selectedRGB);
                 }
+                else isSelected.add(false);
             }
         }
 
+        if (canDesaturate) {
+            ColorConvertOp convert = new ColorConvertOp(
+                                         ColorSpace.getInstance(ColorSpace.CS_GRAY),null);
+            convert.filter(image, image);
+
+            int id = 0;
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+
+                    if (isSelected.get(id)) {
+                        int selectedRGB = (255<<24) | (highlightColor[0]<<16) | (highlightColor[1]<<8) | highlightColor[2];
+                        image.setRGB(x, y, selectedRGB);
+                    }
+                    id++;
+                }
+            }
+        }
         return image;
     }
 
